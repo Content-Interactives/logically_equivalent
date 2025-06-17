@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 
 const LogicallyEquivalent = () => {
@@ -7,6 +6,7 @@ const LogicallyEquivalent = () => {
   const [feedback, setFeedback] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
+  const [isChecked, setIsChecked] = useState(false);
   
   const questions = [
     {
@@ -51,11 +51,16 @@ const LogicallyEquivalent = () => {
     }
   ];
   
-  const checkAnswer = (index) => {
-    setSelectedOption(index);
-    if (index === questions[currentQuestion].answer) {
+  const checkAnswer = () => {
+    if (selectedOption === null) return;
+    
+    if (selectedOption === questions[currentQuestion].answer) {
+      setFeedback("Correct!");
       setScore(score + 1);
+    } else {
+      setFeedback("Incorrect. Try again!");
     }
+    setIsChecked(true);
   };
   
   const nextQuestion = () => {
@@ -63,97 +68,106 @@ const LogicallyEquivalent = () => {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedOption(null);
       setFeedback("");
+      setIsChecked(false);
     } else {
-      // Reset quiz when "Start Over" is clicked
       setCurrentQuestion(0);
       setSelectedOption(null);
       setFeedback("");
       setScore(0);
+      setIsChecked(false);
     }
   };
-  
-  const getButtonText = () => {
-    if (currentQuestion >= questions.length - 1) {
-      return "Start Over";
-    }
-    
-    if (selectedOption === questions[currentQuestion].answer) {
-      return "Next Question";
-    }
-    
-    return "Skip";
-  };
-  
+
   return (
-    <div className="bg-gray-100 p-8 w-full overflow-auto">
-      <Card className="w-full mx-auto shadow-md bg-white">
-        <div className="bg-sky-50 p-6 rounded-t-lg w-full">
-          <h1 className="text-sky-900 text-2xl font-bold">Understanding Logical Equivalence</h1>
-          <p className="text-sky-800">Learn when two statements always have the same truth value!</p>
-        </div>
-        
-        <CardContent className="space-y-6 pt-6 w-full">
-          {/* Definition Box */}
-          <div className="bg-blue-50 p-4 rounded border border-blue-200">
-            <h2 className="text-blue-900 font-bold mb-2">What is Logical Equivalence?</h2>
-            <p className="text-blue-600 mb-3">
-              Two statements are <strong>logically equivalent</strong> if they always have the same truth value, no matter how you look at them. This means:
-              <ul className="ml-6 mt-2 list-disc">
-                <li>If one statement is <strong>true</strong>, the other is also <strong>true</strong>.</li>
-                <li>If one statement is <strong>false</strong>, the other is also <strong>false</strong>.</li>
-              </ul>
-            </p>
-            
-            <h3 className="text-blue-800 font-semibold mt-4 mb-2">Common Logical Equivalence Laws:</h3>
-            <ul className="text-blue-600 space-y-2">
-              <li><strong>Contrapositive:</strong> "If P then Q" ⟺ "If not Q then not P"</li>
-              <li><strong>Double Negation:</strong> "P" ⟺ "not (not P)"</li>
-              <li><strong>De Morgan's Laws:</strong>
-                <ul className="ml-4 mt-1">
-                  <li>"not (P and Q)" ⟺ "(not P) or (not Q)"</li>
-                  <li>"not (P or Q)" ⟺ "(not P) and (not Q)"</li>
-                </ul>
-              </li>
-            </ul>
+    <>
+      <style>{`
+        @property --r {
+          syntax: '<angle>';
+          inherits: false;
+          initial-value: 0deg;
+        }
+
+        .glow-button { 
+          min-width: auto; 
+          height: auto; 
+          position: relative; 
+          border-radius: 8px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1;
+          transition: all .3s ease;
+          padding: 7px;
+        }
+
+        .glow-button::before {
+          content: "";
+          display: block;
+          position: absolute;
+          background: rgb(250, 245, 255);
+          inset: 2px;
+          border-radius: 4px;
+          z-index: -2;
+        }
+
+        .simple-glow {
+          background: conic-gradient(
+            from var(--r),
+            transparent 0%,
+            rgb(0, 255, 132) 2%,
+            rgb(0, 214, 111) 8%,
+            rgb(0, 174, 90) 12%,
+            rgb(0, 133, 69) 14%,
+            transparent 15%
+          );
+          animation: rotating 3s linear infinite;
+          transition: animation 0.3s ease;
+        }
+
+        .simple-glow.stopped {
+          animation: none;
+          background: none;
+        }
+
+        @keyframes rotating {
+          0% {
+            --r: 0deg;
+          }
+          100% {
+            --r: 360deg;
+          }
+        }
+      `}</style>
+      <div className="w-[500px] h-auto mx-auto shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.05)] bg-white rounded-lg overflow-hidden">
+        <div className="p-4">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-[#5750E3] text-sm font-medium select-none">Understanding Logical Equivalence</h2>
+            <button
+              onClick={() => {
+                setCurrentQuestion(0);
+                setSelectedOption(null);
+                setFeedback("");
+                setScore(0);
+                setIsChecked(false);
+              }}
+              className="text-gray-500 hover:text-gray-700 text-sm px-3 py-1 rounded border border-gray-300 hover:border-gray-400 transition-colors"
+            >
+              Reset
+            </button>
           </div>
-          
-          {/* Example Box */}
-          <Card className="border border-gray-200">
-            <CardContent className="space-y-4 pt-4 p-6">
-              <h3 className="text-lg font-semibold mb-2">Examples</h3>
-              <div className="space-y-4">
-                <div>
-                  <p className="font-semibold">Example 1: Logical Equivalence</p>
-                  <p className="text-sm text-gray-600">Statement A: "If I study, then I will pass the exam."</p>
-                  <p className="text-sm text-gray-600">Statement B: "If I do not pass the exam, then I did not study."</p>
-                  <p className="mt-2 bg-blue-100 p-3 rounded text-blue-800">
-                    These statements are logically equivalent because they always have the same truth value in all situations. Statement B is the "contrapositive" of Statement A, and a statement and its contrapositive are always equivalent.
-                  </p>
-                </div>
-                
-                <div>
-                  <p className="font-semibold">Example 2: Not Logically Equivalent</p>
-                  <p className="text-sm text-gray-600">Statement A: "If I study, then I will pass the exam."</p>
-                  <p className="text-sm text-gray-600">Statement B: "If I pass the exam, then I studied."</p>
-                  <p className="mt-2 bg-red-100 p-3 rounded text-red-800">
-                    These statements are NOT logically equivalent because there's a situation where they have different truth values: if someone doesn't study but still passes the exam, Statement A would be true but Statement B would be false.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
+
           {/* Practice Section */}
           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-purple-900 font-bold">Practice Time!</h2>
+              <h2 className="text-purple-900 font-bold">Question {currentQuestion + 1}</h2>
               <div className="flex gap-2">
                 {[0, 1, 2, 3, 4].map((num) => (
                   <div
                     key={num}
                     className={`rounded-full transition-all duration-300 ${
-                      num < currentQuestion ? 'w-3 h-3 bg-green-500' : 
-                      num === currentQuestion ? 'w-2 h-2 bg-purple-600 mt-0.5' : 
+                      num < currentQuestion || (num === 4 && currentQuestion === 4 && feedback.includes("Correct")) ? 'w-3 h-3 bg-[#008545]' : 
+                      num === currentQuestion ? 'w-2 h-2 bg-[#5750E3] mt-0.5' : 
                       'w-3 h-3 bg-purple-200'
                     }`}
                   />
@@ -162,63 +176,83 @@ const LogicallyEquivalent = () => {
             </div>
             
             <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
-              <p className="font-medium">Statement 1: {questions[currentQuestion].statement1}</p>
-              <p className="mt-2 font-medium">Statement 2: {questions[currentQuestion].statement2}</p>
-              <p className="mt-2 font-semibold">Are these statements logically equivalent?</p>
+              <p className="font-medium text-sm">Statement 1: {questions[currentQuestion].statement1}</p>
+              <p className="mt-2 font-medium text-sm">Statement 2: {questions[currentQuestion].statement2}</p>
+              <p className="mt-2 font-semibold text-sm">Are these statements logically equivalent?</p>
             </div>
             
             <div className="space-y-2 mb-4">
               {questions[currentQuestion].options.map((option, index) => (
                 <button
                   key={index}
-                  onClick={() => checkAnswer(index)}
-                  disabled={selectedOption === questions[currentQuestion].answer && index !== questions[currentQuestion].answer}
-                  className={`block w-full text-left p-3 rounded ${
+                  onClick={() => {
+                    if (!isChecked || selectedOption !== questions[currentQuestion].answer) {
+                      setSelectedOption(index);
+                      setFeedback("");
+                      setIsChecked(false);
+                    }
+                  }}
+                  disabled={isChecked && selectedOption === questions[currentQuestion].answer}
+                  className={`block w-full text-left p-3 rounded text-sm ${
                     selectedOption === index 
-                      ? selectedOption === questions[currentQuestion].answer
-                        ? 'bg-green-100 border border-green-500'
-                        : 'bg-red-100 border border-red-500'
-                      : selectedOption === questions[currentQuestion].answer && index !== questions[currentQuestion].answer
-                        ? 'bg-white border border-gray-200 pointer-events-none'
+                      ? !isChecked
+                        ? 'bg-[#5750E3]/10 border border-[#5750E3]'
+                        : selectedOption === questions[currentQuestion].answer
+                          ? 'bg-[#008545]/10 border border-[#008545]'
+                          : 'bg-yellow-100 border border-yellow-500'
+                      : isChecked && index === questions[currentQuestion].answer && selectedOption === questions[currentQuestion].answer
+                        ? 'bg-[#008545]/10 border border-[#008545]'
                         : 'bg-white hover:bg-gray-50 border border-gray-200'
-                  } ${selectedOption === questions[currentQuestion].answer && index !== questions[currentQuestion].answer ? 'opacity-50 cursor-default' : ''}`}
+                  } ${isChecked && selectedOption === questions[currentQuestion].answer ? 'cursor-default' : ''}`}
                 >
                   {option}
                 </button>
               ))}
             </div>
             
-            {selectedOption === questions[currentQuestion].answer && (
-              <div className="p-4 rounded-lg mb-4 bg-green-50 border border-green-200">
-                <p className="font-medium text-green-800">
-                  Correct!
+            {feedback && (
+              <div className={`p-4 rounded-lg mb-4 ${feedback.includes("Correct") ? "bg-[#008545]/10 border border-[#008545]" : "bg-yellow-50 border border-yellow-200"}`}>
+                <p className={`font-medium text-sm ${feedback.includes("Correct") ? "text-[#008545]" : "text-yellow-800"}`}>
+                  {feedback}
                 </p>
-                <p className="mt-2 text-gray-700">
-                  {questions[currentQuestion].explanation}
-                </p>
+                {selectedOption === questions[currentQuestion].answer && feedback.includes("Correct") && (
+                  <p className="mt-2 text-gray-700 text-sm">
+                    {questions[currentQuestion].explanation}
+                  </p>
+                )}
               </div>
             )}
             
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
+              {(!isChecked || selectedOption !== questions[currentQuestion].answer) && (
+                <div className="glow-button simple-glow">
+                  <Button
+                    onClick={checkAnswer}
+                    className="bg-[#00783E] hover:bg-[#006633] text-white text-sm px-4 py-2 rounded"
+                  >
+                    Check
+                  </Button>
+                </div>
+              )}
               {(currentQuestion < questions.length - 1 || 
-                (currentQuestion >= questions.length - 1 && selectedOption === questions[currentQuestion].answer) ||
-                (currentQuestion >= questions.length - 1 && feedback === "Incorrect")
-              ) && (
-                <Button
-                  onClick={nextQuestion}
-                  className="bg-purple-600 hover:bg-purple-700 text-white"
-                >
-                  {getButtonText()}
-                </Button>
+                (currentQuestion >= questions.length - 1 && feedback.includes("Correct"))
+              ) && feedback.includes("Correct") && (
+                <div className="glow-button simple-glow">
+                  <Button
+                    onClick={nextQuestion}
+                    className="bg-[#008545] hover:bg-[#00703d] text-white text-sm px-4 py-2 rounded"
+                  >
+                    {currentQuestion >= questions.length - 1
+                      ? "Start Over" 
+                      : "Next Question"}
+                  </Button>
+                </div>
               )}
             </div>
           </div>
-        </CardContent>
-      </Card>
-      <p className="text-center text-gray-600 mt-4">
-        Understanding logical equivalence is essential for reasoning, mathematics, and computer science!
-      </p>
-    </div>
+        </div>
+      </div>
+    </>
   );
 };
 
