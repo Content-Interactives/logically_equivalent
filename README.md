@@ -1,41 +1,36 @@
 # Logically Equivalent
 
-The **Logically Equivalent** interactive helps students explore logical statements and understand when two expressions are logically equivalent.
+React SPA for comparing logical statements and equivalence.
 
----
+**Live:** [https://content-interactives.github.io/logically_equivalent](https://content-interactives.github.io/logically_equivalent)
 
-## 🔗 Live Interactive
+Curriculum alignment: [Standards.md](Standards.md).
 
-Try it out here:  
-👉 [https://content-interactives.github.io/logically_equivalent](https://content-interactives.github.io/logically_equivalent)
+## Stack
 
----
+- React 19, Vite
+- Tailwind CSS, PostCSS
+- GitHub Pages (`gh-pages`)
 
-## 🌐 Where This Interactive Is Being Used
+## Setup
 
-This interactive is currently featured in the following locations:
+```bash
+npm install
+npm run dev
+```
 
-- <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/5d12571f-8e12-4441-98ab-c0bc94069a96" /> **CK-12 Intent Response**  
-  - 👉 PRODUCTION: PENDING  
-  - 👉 MASTER: PENDING  
-- 📘 **CK-12 Flexbooks**
-  - 👉 PENDING
+## Scripts
 
----
+| Command | Description |
+|--------|-------------|
+| `npm run dev` | Dev server |
+| `npm run build` | Production build |
+| `npm run preview` | Preview build |
+| `npm run lint` | ESLint |
+| `npm run deploy` | Build + deploy |
 
-## 📚 Standards & Subjects
+## Configuration
 
-This interactive aligns with the following topics and standards:
+`vite.config.js`: `base: '/logically_equivalent/'`.
 
-- **📂 Subject Area**: High School Math (Logic / Algebra II)  
-- **🔢 Topic**: Logical Equivalence  
-- **📏 Common Core**:  
-  - HSN-IF.C.7 – Graph functions expressed symbolically and show key features of the graph.  
-  - HSN-IF.C.8 – Write a function defined by an expression in different but equivalent forms to reveal and explain different properties of the function.  
-
----
-
-## 🛠️ Developer Notes
-
-- Built with: React, HTML, CSS, JavaScript  
-- Deployed via GitHub Pages
+Source: `src/`.
